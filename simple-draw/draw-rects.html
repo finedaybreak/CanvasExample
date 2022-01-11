@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>draw-rects</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="300" style="border: 1px dashed black"></canvas>
+    <input type="color" value="#000000" oninput="handleChange(this.value)">
+
+    <script>
+        // 保存绘制颜色
+        let color = "#000000"
+        // 更新最新输入的颜色
+        function handleChange(newColor) {
+            console.log(newColor);
+            color = newColor
+        }
+        window.onload = function () {
+            drawRects()
+        };
+        function drawRects(){
+            const Memo = []
+            // 获取 canvas Dom
+            const canvas = document.getElementById("canvas");
+            // 获取绘制上下文
+            const ctx = canvas.getContext("2d");
+            // 监听鼠标点击
+            window.addEventListener("mousedown", (e) => {
+                // 保存鼠标点击时的坐标
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const move = (e) => {
+                    // 保存鼠标移动时 绘制的矩形宽高
+                    const width = e.clientX - startX
+                    const height = e.clientY - startY
+                    // 设置画笔颜色
+                    ctx.strokeStyle = color;
+                    // 清空绘制区域 
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // 绘制矩形
+                    ctx.strokeRect(startX, startY, width, height);
+                    // 绘制之前记录的信息
+                    Memo.forEach(memo => {
+                        const { startX, startY, width, height, color } = memo;
+                        ctx.strokeStyle = color;
+                        ctx.strokeRect(startX, startY, width, height);
+                    })
+                }
+                const up = (e) => {
+                    const width = e.clientX - startX
+                    const height = e.clientY - startY
+                    // 保存上一个绘制的信息
+                    Memo.push({ startX, startY, width, height, color })
+                    // 清除鼠标事件
+                    window.removeEventListener("mousemove", move);
+                    window.removeEventListener("mouseup", up)
+                }
+                // 开启鼠标事件监听
+                window.addEventListener('mousemove', move)
+                window.addEventListener('mouseup', up)
+            })
+        }
+    </script>
+
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</body>
+
+</html>
