@@ -12,21 +12,24 @@
     <canvas id="canvas" width="500" height="300" style="border: 1px dashed black"></canvas>
 
     <div class="controllers">
-        <div style="display: inline-block;"><input type="color" value="#000000" oninput="handleChange(this.value)">
-        </div>
-        <div style="display: inline-block;">
+        <div><input type="color" value="#FF0000" oninput="handleChange(this.value)"></div>
+        <div>
             <input type="radio" checked name="drawtype" id="fill" onchange="handleTypeChange(this.value)" value="fill">
             <label for="fill">填充矩形</label>
         </div>
-        <div style="display: inline-block;">
+        <div>
             <input type="radio" name="drawtype" id="rect" onchange="handleTypeChange(this.value)" value="rect">
             <label for="rect">线条矩形</label>
+        </div>
+        <div>
+            <input type="radio" name="drawtype" id="yellow" onchange="handleTypeChange(this.value)" value="">
+            <label for="yellow">黄色线条填充矩形</label>
         </div>
     </div>
 
     <script>
         // 保存绘制颜色
-        let color = "#000000"
+        let color = "#FF0000"
         // 保存绘制矩形类型
         let drawtype = 'fill'
         // 更新最新输入的颜色
@@ -94,6 +97,15 @@
                 ctx.strokeStyle = color;
                 // 绘制线条矩形
                 ctx.strokeRect(startX, startY, width, height);
+            } else {
+                // 设置填充颜色
+                ctx.fillStyle = color;
+                // 绘制填充矩形
+                ctx.fillRect(startX, startY, width, height);
+                // 设置画笔颜色
+                ctx.strokeStyle = 'yellow';
+                // 绘制线条矩形
+                ctx.strokeRect(startX, startY, width, height);
             }
         }
 
@@ -105,8 +117,11 @@
             margin: 0;
             padding: 0;
         }
+
         .controllers {
-            padding: 30px;
+            width: 500px;
+            display: flex;
+            justify-content: space-around;
         }
     </style>
 </body>
