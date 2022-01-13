@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>draw-polygon</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="1000" height="1000" ></canvas>
+
+    <script>
+        window.onload = main
+
+        function main() {
+
+            console.log("hello polygon");
+            // 获取 canvas Dom
+            const canvas = document.getElementById("canvas");
+            // 获取绘制上下文
+            const ctx = canvas.getContext("2d");
+
+            const randomHEX = ()=>Math.floor(Math.random()*16%16).toString(16)
+
+            const Memo = []
+
+            window.addEventListener("mousedown", (e) => {
+                let deg = Math.random() * 1000 % 360
+
+                let randomColor = `#${randomHEX()}${randomHEX()}${randomHEX()}`
+
+                console.log(randomColor);
+                // 保存鼠标点击时的坐标
+                const startX = e.clientX;
+                const startY = e.clientY;
+
+                const move = (e) => {
+                    // 保存鼠标移动时 绘制的矩形宽高
+                    const width = e.clientX - startX
+                    const height = e.clientY - startY
+                    // 清空绘制区域 
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    Memo.forEach((item) => {
+                        drawPolygons(ctx, 5, item.startX, item.startY, Math.pow((item.width * item.width + item.height * item.height), 0.5), item.deg)
+                        ctx.fillStyle = item.randomColor;
+                        ctx.fill()
+                    })
+                    drawPolygons(ctx, 5, startX, startY, Math.pow((width * width + height * height), 0.5), deg)
+                    ctx.fillStyle = randomColor;
+                    ctx.fill()
+                }
+                const up = (e) => {
+                    const width = e.clientX - startX
+                    const height = e.clientY - startY
+                    Memo.push({ startX, startY, width, height, deg,randomColor })
+                    // 清除鼠标事件
+                    window.removeEventListener("mousemove", move);
+                    window.removeEventListener("mouseup", up)
+                }
+                // 开启鼠标事件监听
+                window.addEventListener('mousemove', move)
+                window.addEventListener('mouseup', up)
+            })
+        }
+
+
+        function drawPolygons(ctx, n, dx, dy, size, rote) {
+            ctx.beginPath()
+            let degree = (2 * Math.PI) / n
+            for (let i = 0; i < n; i++) {
+                let x = Math.cos(i * degree + rote)
+                let y = Math.sin(i * degree + rote)
+                ctx.lineTo(x * size + dx, y * size + dy)
+            }
+            ctx.closePath()
+        }
+    </script>
+
+    <style type="text/css">
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</body>
+
+</html>
