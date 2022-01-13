@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="1000" height="1000" ></canvas>
+    <canvas id="canvas" width="1000" height="1000"></canvas>
 
     <script>
         window.onload = main
@@ -22,16 +22,25 @@
             // 获取绘制上下文
             const ctx = canvas.getContext("2d");
 
-            const randomHEX = ()=>Math.floor(Math.random()*16%16).toString(16)
+            const randomHEX = () => Math.floor(Math.random() * 16 % 16).toString(16)
+
+            function getNum(){
+                const num = Math.floor(Math.random() * 10) % 10;
+                if(num<3){
+                    return getNum()
+                }
+                return num
+            }
 
             const Memo = []
 
             window.addEventListener("mousedown", (e) => {
+                let num = getNum();
+
                 let deg = Math.random() * 1000 % 360
 
-                let randomColor = `#${randomHEX()}${randomHEX()}${randomHEX()}`
+                let randomColor = `#${randomHEX()}${randomHEX()}${randomHEX()}${randomHEX()}${randomHEX()}${randomHEX()}${randomHEX()}${randomHEX()}`
 
-                console.log(randomColor);
                 // 保存鼠标点击时的坐标
                 const startX = e.clientX;
                 const startY = e.clientY;
@@ -43,18 +52,18 @@
                     // 清空绘制区域 
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     Memo.forEach((item) => {
-                        drawPolygons(ctx, 5, item.startX, item.startY, Math.pow((item.width * item.width + item.height * item.height), 0.5), item.deg)
+                        drawPolygons(ctx, item.num, item.startX, item.startY, Math.pow((item.width * item.width + item.height * item.height), 0.5), item.deg)
                         ctx.fillStyle = item.randomColor;
                         ctx.fill()
                     })
-                    drawPolygons(ctx, 5, startX, startY, Math.pow((width * width + height * height), 0.5), deg)
+                    drawPolygons(ctx, num, startX, startY, Math.pow((width * width + height * height), 0.5), deg)
                     ctx.fillStyle = randomColor;
                     ctx.fill()
                 }
                 const up = (e) => {
                     const width = e.clientX - startX
                     const height = e.clientY - startY
-                    Memo.push({ startX, startY, width, height, deg,randomColor })
+                    Memo.push({ startX, startY, width, height, deg, randomColor ,num})
                     // 清除鼠标事件
                     window.removeEventListener("mousemove", move);
                     window.removeEventListener("mouseup", up)
